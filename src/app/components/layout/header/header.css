@@ -1,0 +1,13 @@
+.header {
+  background: #fff;
+  text-align: center;
+  padding: 2rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.btn-shop {
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}

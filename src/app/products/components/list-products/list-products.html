@@ -1,0 +1,60 @@
+<div class="product-list">
+  <div class="add-product-button">
+    <button mat-raised-button color="primary" (click)="openAddProductDialog()">
+      Agregar Nuevo Producto
+    </button>
+  </div>
+  <div class="product-item" *ngFor="let product of products$ | async; trackBy: trackById">
+    <div class="product-header main-black" (click)="toggleExpand(product._id)">
+      <span>ID: {{ product._id }}</span>
+      <span>Categoría: {{ product.category }}</span>
+      <span>Descripción: {{ product.description }}</span>
+      <span class="arrow" [class.expanded]="isExpanded(product._id)">▼</span>
+    </div>
+
+    <div class="product-details" *ngIf="isExpanded(product._id)">
+      <div class="table-container">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Fecha De Creación</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Valor</th>
+              <th>Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img [src]="product.productImageUrl" [alt]="product.name" class="product-image" width="50"></td>
+              <td>{{ product.creationDate | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.price | currency }}</td>
+              <td>{{ product.value | currency }}</td>
+              <td>{{ product.stock }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controles de paginación -->
+  <div class="pagination-controls" *ngIf="pagination">
+    <div class="pagination-info">
+      Página {{ pagination.currentPage }} de {{ pagination.totalPages }}
+      ({{ pagination.totalItems }} productos en total)
+    </div>
+    <div class="pagination-buttons">
+      <button [disabled]="!canGoPrevious" (click)="previousPage()" class="pagination-button">
+        Anterior
+      </button>
+      <button [disabled]="!canGoNext" (click)="nextPage()" class="pagination-button">
+        Siguiente
+      </button>
+    </div>
+  </div>
+</div>
