@@ -39,6 +39,14 @@
           </tbody>
         </table>
       </div>
+      <div class="product-actions">
+        <button mat-icon-button color="accent" (click)="openEditProductDialog(product)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="openDeleteProductDialog(product)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 

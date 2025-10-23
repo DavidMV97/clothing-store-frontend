@@ -5,13 +5,18 @@ import { Product, ProductsApiResponse, Pagination } from '../../interfaces/produ
 import { MatDialog } from '@angular/material/dialog';
 import { AddProductDialogComponent } from '../add-product-dialog/add-product-dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { map, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+
 
 @Component({
   selector: 'app-list-products',
   standalone: true,
-  imports: [AsyncPipe, CurrencyPipe, NgForOf, NgIf, DatePipe, MatButtonModule],
+  imports: [AsyncPipe, CurrencyPipe, NgForOf, NgIf, DatePipe, MatButtonModule, MatIconModule, MatSnackBarModule],
   templateUrl: './list-products.html',
   styleUrl: './list-products.css',
 })
@@ -19,11 +24,13 @@ export class ListProducts implements OnInit {
   private productService = inject(ProductsService);
   private dialog = inject(MatDialog);
   private currentPageSubject = new BehaviorSubject<number>(1);
-  
+  private snackBar = inject(MatSnackBar);
+
+
   expandedItems = new Set<string>();
   currentPage$ = this.currentPageSubject.asObservable();
   pagination: Pagination | null = null;
-  
+
   products$ = this.currentPage$.pipe(
     switchMap(page => this.productService.getProducts(page).pipe(
       tap(response => this.pagination = response.pagination),
@@ -75,7 +82,7 @@ export class ListProducts implements OnInit {
 
   openAddProductDialog(): void {
     const dialogRef = this.dialog.open(AddProductDialogComponent);
-    
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // Refresh the current page to show the new product
@@ -83,4 +90,49 @@ export class ListProducts implements OnInit {
       }
     });
   }
+
+  openEditProductDialog(product: Product): void {
+    const dialogRef = this.dialog.open(AddProductDialogComponent, {
+      data: { product }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Refresh the current page to show the updated product
+        this.currentPageSubject.next(this.currentPageSubject.value);
+      }
+    });
+  }
+
+
+  openDeleteProductDialog(product: Product): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
+      data: { id: product._id!, name: product.name },
+    });
+
+    dialogRef.afterClosed().subscribe(confirm => {
+      if (confirm) {
+        this.productService.deleteProduct(product._id!).subscribe({
+          next: () => {
+            this.snackBar.open('Producto eliminado con éxito', 'Cerrar', {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+            });
+            this.currentPageSubject.next(this.currentPageSubject.value);
+          },
+          error: err => {
+            console.error('Error al eliminar producto:', err);
+            this.snackBar.open('Error al eliminar el producto', 'Cerrar', {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+            });
+          },
+        });
+      }
+    });
+  }
+
+
+
 }
