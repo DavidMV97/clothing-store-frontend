@@ -7,16 +7,34 @@ import { AddProductDialogComponent } from '../add-product-dialog/add-product-dia
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { map, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, combineLatest, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+
 
 
 
 @Component({
   selector: 'app-list-products',
   standalone: true,
-  imports: [AsyncPipe, CurrencyPipe, NgForOf, NgIf, DatePipe, MatButtonModule, MatIconModule, MatSnackBarModule],
+  imports: [
+    AsyncPipe, 
+    CurrencyPipe, 
+    NgForOf, 
+    NgIf, 
+    DatePipe, 
+    MatButtonModule, 
+    MatIconModule, 
+    MatSnackBarModule,
+     MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule
+  ],
   templateUrl: './list-products.html',
   styleUrl: './list-products.css',
 })
@@ -25,17 +43,33 @@ export class ListProducts implements OnInit {
   private dialog = inject(MatDialog);
   private currentPageSubject = new BehaviorSubject<number>(1);
   private snackBar = inject(MatSnackBar);
+  selectedCategory = '';
 
+  private selectedCategorySubject = new BehaviorSubject<string | null>(null);
+  private searchTermSubject = new BehaviorSubject<string>('');
+
+
+  selectedCategory$ = this.selectedCategorySubject.asObservable();
 
   expandedItems = new Set<string>();
   currentPage$ = this.currentPageSubject.asObservable();
   pagination: Pagination | null = null;
+  searchTerm$ = this.searchTermSubject.asObservable();
 
-  products$ = this.currentPage$.pipe(
-    switchMap(page => this.productService.getProducts(page).pipe(
-      tap(response => this.pagination = response.pagination),
-      map(response => response.products)
-    ))
+
+  categories$: Observable<string[]> = this.productService.getCategories();
+
+  products$ = combineLatest([
+    this.currentPage$,
+    this.selectedCategory$,
+    this.searchTerm$.pipe(debounceTime(300), distinctUntilChanged()) // evita múltiples llamadas rápidas
+  ]).pipe(
+    switchMap(([page, category, search]) =>
+      this.productService.getProducts(page, category || undefined, search || undefined).pipe(
+        tap(response => (this.pagination = response.pagination)),
+        map(response => response.products)
+      )
+    )
   );
 
   trackById(_index: number, item: Product) {
@@ -64,7 +98,7 @@ export class ListProducts implements OnInit {
       this.expandedItems.clear();
     }
   }
-
+  
   previousPage(): void {
     if (this.currentPageSubject.value > 1) {
       this.currentPageSubject.next(this.currentPageSubject.value - 1);
@@ -85,7 +119,6 @@ export class ListProducts implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Refresh the current page to show the new product
         this.currentPageSubject.next(this.currentPageSubject.value);
       }
     });
@@ -97,7 +130,6 @@ export class ListProducts implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Refresh the current page to show the updated product
         this.currentPageSubject.next(this.currentPageSubject.value);
       }
     });
@@ -133,6 +165,14 @@ export class ListProducts implements OnInit {
     });
   }
 
+  onCategoryChange(category: string) {
+    this.selectedCategorySubject.next(category || null);
+    this.currentPageSubject.next(1);
+  }
 
+  onSearchChange(value: string) {
+    this.searchTermSubject.next(value.trim());
+    this.currentPageSubject.next(1);
+  }
 
 }

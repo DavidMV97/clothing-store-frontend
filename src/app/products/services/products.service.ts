@@ -21,16 +21,23 @@ export class ProductsService {
     return this.http.put<Product>(`${baseUrl}/products/${id}`, product as any);
   }
 
-  getProducts(page: number = 1): Observable<ProductsApiResponse> {
-    return this.http.get<ProductsApiResponse>(`${baseUrl}/products`, {
-      params: { page: page.toString() }
-    }).pipe(
+
+  getProducts(page: number = 1, category?: string, search?: string): Observable<ProductsApiResponse> {
+    const params: any = { page: page.toString() };
+    if (category) params.category = category;
+    if (search) params.search = search;
+
+    return this.http.get<ProductsApiResponse>(`${baseUrl}/products`, { params }).pipe(
       tap((response) => console.log('Products response:', response))
     );
   }
 
   deleteProduct(id: string): Observable<void> {
     return this.http.delete<void>(`${baseUrl}/products/${id}`);
+  }
+
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${baseUrl}/categories`);
   }
 }
 
