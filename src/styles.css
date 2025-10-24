@@ -5,10 +5,13 @@
   --secondary-black: #333333;
 }
 
-html {
+html, * {
   box-sizing: border-box;
   --mat-sys-inverse-primary: #242424;
-
+}
+html, body {
+   max-width: 100%;
+   overflow-x: hidden;
 }
 
 body {
