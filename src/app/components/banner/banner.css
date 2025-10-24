@@ -1,0 +1,55 @@
+.cta{
+    background: var(--secondary-black);
+    color: white;
+    padding: 12px 0 30px 0;
+}
+.header-content{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.btn-shop{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+button{
+    border: 1px solid white;
+    color: white;
+    font-weight: bold;
+    background: var(--secondary-black);
+    font-style: italic;
+    padding: 5px 15px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover{
+    background: white;
+    color: var(--secondary-black);
+}
+
+button span{
+    font-weight: 300;
+}
+
+p{
+    font-size: 25px;
+}
+
+img{
+    display: flex;
+    margin: 0 auto;
+    padding: 12px 0;
+    max-width: 600px;
+    width: 100%;
+}
+
+@media (max-width: 768px){
+    p{
+        font-size: 14px;
+    }
+}

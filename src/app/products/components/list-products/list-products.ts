@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 
 
@@ -22,18 +24,19 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-list-products',
   standalone: true,
   imports: [
-    AsyncPipe, 
-    CurrencyPipe, 
-    NgForOf, 
-    NgIf, 
-    DatePipe, 
-    MatButtonModule, 
-    MatIconModule, 
+    AsyncPipe,
+    CurrencyPipe,
+    NgForOf,
+    NgIf,
+    DatePipe,
+    MatButtonModule,
+    MatIconModule,
     MatSnackBarModule,
-     MatFormFieldModule,
+    MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './list-products.html',
   styleUrl: './list-products.css',
@@ -44,6 +47,7 @@ export class ListProducts implements OnInit {
   private currentPageSubject = new BehaviorSubject<number>(1);
   private snackBar = inject(MatSnackBar);
   selectedCategory = '';
+  loading = false;
 
   private selectedCategorySubject = new BehaviorSubject<string | null>(null);
   private searchTermSubject = new BehaviorSubject<string>('');
@@ -62,7 +66,7 @@ export class ListProducts implements OnInit {
   products$ = combineLatest([
     this.currentPage$,
     this.selectedCategory$,
-    this.searchTerm$.pipe(debounceTime(300), distinctUntilChanged()) // evita múltiples llamadas rápidas
+    this.searchTerm$.pipe(debounceTime(300), distinctUntilChanged()) // avoid multiple speed dials
   ]).pipe(
     switchMap(([page, category, search]) =>
       this.productService.getProducts(page, category || undefined, search || undefined).pipe(
@@ -98,7 +102,7 @@ export class ListProducts implements OnInit {
       this.expandedItems.clear();
     }
   }
-  
+
   previousPage(): void {
     if (this.currentPageSubject.value > 1) {
       this.currentPageSubject.next(this.currentPageSubject.value - 1);
@@ -120,6 +124,11 @@ export class ListProducts implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.currentPageSubject.next(this.currentPageSubject.value);
+        this.snackBar.open('Producto Agregado con éxito', 'Cerrar', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+        });
       }
     });
   }
@@ -131,6 +140,11 @@ export class ListProducts implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.currentPageSubject.next(this.currentPageSubject.value);
+        this.snackBar.open('Producto Editado con éxito', 'Cerrar', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+        });
       }
     });
   }

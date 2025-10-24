@@ -1,28 +1,28 @@
 <div class="product-list">
-    <mat-form-field appearance="outline" class="flex-1">
-    <mat-label>Buscar producto</mat-label>
-    <input
-      matInput
-      type="text"
-      placeholder="Escribe un nombre..."
-      (input)="onSearchChange($event.target.value)"
-    />
-  </mat-form-field>
-  <mat-form-field appearance="fill" class="w-full mb-4">
-    <mat-label>Categoría</mat-label>
-    <mat-select (selectionChange)="onCategoryChange($event.value)">
-      <mat-option value="">Todas</mat-option>
-      <mat-option *ngFor="let category of categories$ | async" [value]="category">
-        {{ category }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <div class="add-product-button">
-    <button mat-raised-button (click)="openAddProductDialog()">
-      Agregar Nuevo Producto
-    </button>
+  <div class="product-header-controls">
+    <div class="product-filters">
+      <mat-form-field appearance="outline" style="vertical-align: top;" class="flex-1">
+        <mat-label>Buscar producto</mat-label>
+        <input matInput type="text" placeholder="Escribe un nombre..." (input)="onSearchChange($event.target.value)" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="w-full mb-4">
+        <mat-label>Filtrar por Categoría</mat-label>
+        <mat-select (selectionChange)="onCategoryChange($event.value)">
+          <mat-option value="">Todas</mat-option>
+          <mat-option *ngFor="let category of categories$ | async" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="add-product-button">
+      <button mat-raised-button (click)="openAddProductDialog()">
+        Agregar Nuevo Producto
+      </button>
+    </div>
   </div>
+
+
   <div class="product-item" *ngFor="let product of products$ | async; trackBy: trackById">
     <div class="product-header main-black" (click)="toggleExpand(product._id)">
       <span>ID: {{ product._id }}</span>
@@ -59,11 +59,11 @@
         </table>
       </div>
       <div class="product-actions">
-        <button mat-icon-button color="accent" (click)="openEditProductDialog(product)">
-          <mat-icon>edit</mat-icon>
+        <button mat-icon-button (click)="openEditProductDialog(product)">
+          <mat-icon style="color: #005CBB">edit</mat-icon>
         </button>
         <button mat-icon-button color="warn" (click)="openDeleteProductDialog(product)">
-          <mat-icon>delete</mat-icon>
+          <mat-icon style="color: #ba1a1a;">delete</mat-icon>
         </button>
       </div>
     </div>

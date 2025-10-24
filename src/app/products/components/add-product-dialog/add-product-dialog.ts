@@ -8,6 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+
 
 @Component({
   selector: 'app-add-product-dialog',
@@ -20,7 +23,9 @@ import { NgIf } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    NgIf
+    NgIf,
+    MatSelectModule,
+    MatOptionModule
   ]
 })
 export class AddProductDialogComponent implements OnInit {
@@ -28,6 +33,7 @@ export class AddProductDialogComponent implements OnInit {
   selectedFile: File | null = null;
   previewSrc: string | ArrayBuffer | null = null;
   titleModal: string = 'Agregar Producto';
+  errorMessage: string = '';
 
   constructor(
     private dialogRef: MatDialogRef<AddProductDialogComponent>,
@@ -87,6 +93,7 @@ export class AddProductDialogComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error updating product:', error);
+            this.errorMessage = 'Ocurrió un error al editar el producto. Inténtalo nuevamente.';
           }
         });
       } else {
@@ -97,6 +104,7 @@ export class AddProductDialogComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error creating product:', error);
+            this.errorMessage = 'Ocurrió un error al guardar el producto. Inténtalo nuevamente.';
           }
         });
       }

@@ -1,0 +1,58 @@
+.taps-container {
+    margin-top: 20px;
+}
+
+.taps-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid black;
+    padding: 10px 20px;
+}
+
+button {
+    background: white;
+    border: none;
+    color: black;
+    padding: 0;
+    font-size: 13px;
+}
+
+.taps-image {
+    position: relative;
+}
+
+img {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.taps-image button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 30px;
+    font-size: 20px;
+    background: var(--secondary-black);
+    color: white;
+    border: 1px solid white;
+    padding: 5px 25px;
+    transition: background 0.3s ease;
+    cursor: pointer;
+}
+
+.taps-image button:hover {
+    background: white;
+    color: var(--secondary-black);
+}
+
+@media (max-width: 768px) {
+    .taps-image button {
+        left: 10px;
+        padding: 5px 15px;
+        font-size: 18px;
+    }
+}
