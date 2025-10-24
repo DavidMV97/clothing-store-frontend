@@ -5,11 +5,12 @@ import { Footer } from './components/layout/footer/footer';
 import { ListProducts } from './products/components/list-products/list-products';
 import { Banner } from "./components/banner/banner";
 import { Taps } from './components/taps/taps';
+import { LoadingSpinner } from './components/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, Footer, ListProducts, Banner, Taps],
+  imports: [RouterOutlet, Header, Footer, ListProducts, Banner, Taps, LoadingSpinner],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
