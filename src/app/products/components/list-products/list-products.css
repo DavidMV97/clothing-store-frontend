@@ -92,13 +92,19 @@ span {
 }
 
 .product-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 20px;
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
   padding: 0.75rem 1rem;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+.product-header span:not(:last-child):not(.description) {
+  border-right: 1px solid #777;
+  padding-right: 1rem;
 }
 
 .product-header-controls {
@@ -232,8 +238,14 @@ span {
   }
 
   .product-header {
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .product-header span:not(:last-child):not(.description) {
+    border-right: 0;
+    padding-right: 0;
   }
 
   .product-details {
