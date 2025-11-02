@@ -25,7 +25,7 @@
 
   <div class="product-item" *ngFor="let product of products$ | async; trackBy: trackById">
     <div class="product-header main-black" (click)="toggleExpand(product._id)">
-      <span>ID: {{ product._id }}</span>
+      <span>ID: {{ product._id.slice(-5) }}</span>
       <span>Categoría: {{ product.category }}</span>
       <span class="description">Descripción: {{ product.description }}</span>
       <span class="arrow" [class.expanded]="isExpanded(product._id)">▼</span>
